@@ -130,6 +130,12 @@
             var ytId = link.includes("v=") ? link.split('v=')[1].split('&')[0] : link.split("/").pop().split("?")[0];
             return `<iframe src="https://www.youtube.com/embed/${ytId}?autoplay=1" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
         } 
+
+        if (link.includes("tiktok.com")) {
+            let ttId = link.split("/video/")[1]?.split("?")[0];
+            return `<iframe src="https://www.tiktok.com/embed/v2/${ttId}" allow="fullscreen"></iframe>`;
+        }
+        
         if (link.includes("twitch.tv")) {
             let twId = link.split("/").pop().split("?")[0];
             // Fix Parent untuk GitHub Pages

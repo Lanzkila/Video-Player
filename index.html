@@ -160,14 +160,23 @@
         const targets = ['ifrm-A', 'ifrm-B', 'ifrm-C', 'ifrm-D'];
         let maxSlots = document.getElementById('slotD').style.display === 'block' ? 4 : (document.getElementById('slotB').style.display === 'block' ? 2 : 1);
 
-        // Check if it's an MP4 file (Only for Slot A)
-        if(slotIndex === 0 && (url.toLowerCase().endsWith(".mp4") || url.includes(".mp4?"))) {
+        // --- LOGIK BARU: Check MP4 atau M3U8 (HLS) ---
+        const isVideoFile = url.toLowerCase().endsWith(".mp4") || 
+                            url.includes(".mp4?") || 
+                            url.toLowerCase().endsWith(".m3u8") || 
+                            url.includes(".m3u8?");
+
+        if(slotIndex === 0 && isVideoFile) {
             document.getElementById('ifrm-A').style.display = 'none';
             document.getElementById('vjs-eng').style.display = 'block';
-            player.src({ src: url, type: 'video/mp4' });
+            
+            // Tentukan type: kalau m3u8 guna application/x-mpegURL
+            let type = url.includes(".m3u8") ? 'application/x-mpegURL' : 'video/mp4';
+            
+            player.src({ src: url, type: type });
             player.play();
         } else {
-            // Reset Slot A if not MP4
+            // Jika bukan video file atau bukan slot A, guna Iframe macam biasa
             if(slotIndex === 0) { 
                 document.getElementById('vjs-eng').style.display = 'none'; 
                 player.pause(); 
@@ -176,7 +185,6 @@
             document.getElementById(targets[slotIndex]).innerHTML = getHTML(url);
         }
 
-        // Cycle through slots
         slotIndex = (slotIndex + 1) % maxSlots;
         document.getElementById('videoUrl').value = '';
         document.getElementById('videoUrl').blur();
